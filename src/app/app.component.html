@@ -1,0 +1,221 @@
+<div class="app-shell">
+  
+  <main class="page">
+    <section class="page-heading">
+      <div>
+        <h1>Audit Search</h1>
+        <p>Search and review system and user activity based on role and permission.</p>
+      </div>
+    </section>
+
+    <section class="card search-card">
+      <div class="card-header">
+        <div>
+          <h2>Audit Search Criteria</h2>
+          <p>Enter one or more criteria to search audit records.</p>
+        </div>
+        <span class="required-note"><span>*</span> Required fields</span>
+      </div>
+
+      <form [formGroup]="searchForm" (ngSubmit)="search()" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label for="startDate">Start date <span>*</span></label>
+            <input id="startDate" type="date" formControlName="startDate">
+          </div>
+
+          <div class="field">
+            <label for="endDate">End date <span>*</span></label>
+            <input id="endDate" type="date" formControlName="endDate">
+            <small class="error" *ngIf="searchForm.controls.endDate.hasError('range')">
+              End date must be on or after start date.
+            </small>
+          </div>
+
+          <div class="field field-wide">
+            <label for="applicationName">Application name <span>*</span></label>
+            <input id="applicationName" type="text" formControlName="applicationName">
+          </div>
+
+          <div class="field field-wide">
+            <label for="userName">User name</label>
+            <input id="userName" type="text" formControlName="userName" placeholder="Last name, First name">
+          </div>
+
+          <fieldset class="field-group">
+            <legend>Event type</legend>
+            <div class="check-row">
+              <label class="check-item" *ngFor="let type of eventTypes">
+                <input
+                  type="checkbox"
+                  [checked]="isMultiValueSelected('eventTypes', type)"
+                  (change)="toggleMultiValue('eventTypes', type)">
+                <span>{{ type }}</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="field-group">
+            <legend>Event status</legend>
+            <div class="check-row">
+              <label class="check-item" *ngFor="let status of eventStatuses">
+                <input
+                  type="checkbox"
+                  [checked]="isMultiValueSelected('eventStatuses', status)"
+                  (change)="toggleMultiValue('eventStatuses', status)">
+                <span>{{ status }}</span>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="reset()">Reset</button>
+          <button type="submit" class="btn btn-primary" [disabled]="loading()">
+            <span class="button-spinner" *ngIf="loading()"></span>
+            {{ loading() ? 'Searching...' : 'Search audit records' }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card results-card">
+      <div class="results-header">
+        <div>
+          <h2>Audit Search Results</h2>
+          <p *ngIf="searched()">{{ sortedRecords().length }} record{{ sortedRecords().length === 1 ? '' : 's' }} found</p>
+        </div>
+        
+      </div>
+
+      <div class="loading-bar" *ngIf="loading()"><span></span></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="select-column">
+                <label class="sr-only" for="select-all">Select all visible results</label>
+                <input id="select-all" type="checkbox" [checked]="allVisibleSelected()" (change)="toggleVisibleRecords()">
+              </th>
+              <th><button class="sort-button" (click)="sortBy('eventDate')" type="button">Event Date <span>{{ sortIcon('eventDate') }}</span></button></th>
+              <th><button class="sort-button" (click)="sortBy('eventTime')" type="button">Event Time <span>{{ sortIcon('eventTime') }}</span></button></th>
+              <th><button class="sort-button" (click)="sortBy('userName')" type="button">User Name <span>{{ sortIcon('userName') }}</span></button></th>
+              <th><button class="sort-button" (click)="sortBy('eventType')" type="button">Event Type <span>{{ sortIcon('eventType') }}</span></button></th>
+              <th><button class="sort-button" (click)="sortBy('eventStatus')" type="button">Event Status <span>{{ sortIcon('eventStatus') }}</span></button></th>
+              <th><button class="sort-button" (click)="sortBy('applicationName')" type="button">Application Name <span>{{ sortIcon('applicationName') }}</span></button></th>
+              <th><button class="sort-button" (click)="sortBy('businessFunction')" type="button">Business Function <span>{{ sortIcon('businessFunction') }}</span></button></th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let record of pagedRecords()">
+              <td class="select-column">
+                <input type="checkbox" [checked]="selectedIds().has(record.id)" (change)="toggleRecord(record.id)">
+              </td>
+              <td class="date-cell">{{ formatDate(record.eventDate) }}</td>
+              <td>{{ record.eventTime }}</td>
+              <td>
+                <div class="user-cell">
+                  <span>{{ record.userName }}</span>
+                </div>
+              </td>
+              <td><span >{{ record.eventType }}</span></td>
+              <td><span class="status-pill" >{{ record.eventStatus }}</span></td>
+              <td>{{ record.applicationName }}</td>
+              <td>{{ record.businessFunction }}</td>
+              <td>
+                <button type="button" class="view-button" (click)="viewRecord(record)">
+                  <span aria-hidden="true"></span> View
+                </button>
+              </td>
+            </tr>
+
+            <tr class="empty-row" *ngIf="!loading() && pagedRecords().length === 0">
+              <td colspan="9">
+                <div class="empty-state">
+                  <div class="empty-icon">⌕</div>
+                  <strong>No audit records found</strong>
+                  <span>Try adjusting the search criteria and search again.</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+  </main>
+
+</div>
+
+<div class="modal-backdrop" *ngIf="selectedRecord() as record" (click)="closeDetails()">
+  <aside class="details-panel" role="dialog" aria-modal="true" aria-labelledby="details-title" (click)="$event.stopPropagation()">
+    <div class="details-header">
+      <div>
+        <h2 id="details-title">Audit Record Details</h2>
+      </div>
+      <button class="close-button" type="button" aria-label="Close details" (click)="closeDetails()">×</button>
+    </div>
+
+    <div class="details-body">
+      <section class="accordion-section">
+        <button class="accordion-title" type="button" (click)="toggleSection(1)">
+          <span>
+            <span class="">Section 1:</span>
+            Details section
+          </span>
+          <span>{{ isSectionExpanded(1) ? '⌃' : '⌄' }}</span>
+        </button>
+
+        <div class="accordion-content" *ngIf="isSectionExpanded(1)">
+          <div class="detail-grid">
+            <div><span>Event Date</span><strong>{{ formatDate(record.eventDate) }}</strong></div>
+            <div><span>Event Time</span><strong>{{ record.eventTime }}</strong></div>
+            <div><span>User ID</span><strong>{{ record.userId }}</strong></div>
+            <div><span>User Name</span><strong>{{ record.userName }}</strong></div>
+            <div><span>Application Name</span><strong>{{ record.applicationName }}</strong></div>
+            <div><span>Business Function</span><strong>{{ record.businessFunction }}</strong></div>
+            <div><span>Event Type</span><strong>{{ record.eventType }}</strong></div>
+            <div><span>Event Status</span><strong class="inline-status" [class]="statusClass(record.eventStatus)">{{ record.eventStatus }}</strong></div>
+            <div class="full-width"><span>IP Address of User</span><strong>{{ record.ipAddress }}</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="accordion-section">
+        <button class="accordion-title" type="button" (click)="toggleSection(2)">
+          <span>
+            <span class="">Section 2:</span>
+            Server Information
+          </span>
+          <span>{{ isSectionExpanded(2) ? '⌃' : '⌄' }}</span>
+        </button>
+
+        <div class="accordion-content" *ngIf="isSectionExpanded(2)">
+          <div class="sub-heading">Request Data</div>
+          <div class="detail-grid compact">
+            <div><span>SSN</span><strong>{{ record.requestData.ssn }}</strong></div>
+            <div><span>Start Date</span><strong>{{ record.requestData.startDate }}</strong></div>
+            <div><span>End Date</span><strong>{{ record.requestData.endDate }}</strong></div>
+          </div>
+
+          <div class="sub-heading response-heading">Response Data</div>
+          <div >
+            <div class="detail-grid compact">
+              <div>
+                <span>Claimant Information</span>
+                <strong>{{ record.responseData.claimantInformation }}</strong>
+              </div>
+          </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="details-footer">
+      <button type="button" class="btn btn-secondary" (click)="closeDetails()">Close</button>
+    </div>
+  </aside>
+</div>
