@@ -1,0 +1,59 @@
+<section class="card results-card">
+  <div class="results-header">
+    <div>
+      <h2>Audit Search Results</h2>
+      <p *ngIf="searched">{{ records.length }} record{{ records.length === 1 ? '' : 's' }} found</p>
+    </div>
+  </div>
+
+  <div class="loading-bar" *ngIf="loading"><span></span></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="select-column">
+            <label class="sr-only" for="select-all">Select all visible results</label>
+            <input id="select-all" type="checkbox" [checked]="allVisibleSelected" (change)="visibleRecordsToggled.emit()">
+          </th>
+          <th><button class="sort-button" (click)="sortRequested.emit('eventDate')" type="button">Event Date <span>{{ sortIcon('eventDate') }}</span></button></th>
+          <th><button class="sort-button" (click)="sortRequested.emit('eventTime')" type="button">Event Time <span>{{ sortIcon('eventTime') }}</span></button></th>
+          <th><button class="sort-button" (click)="sortRequested.emit('userName')" type="button">User Name <span>{{ sortIcon('userName') }}</span></button></th>
+          <th><button class="sort-button" (click)="sortRequested.emit('eventType')" type="button">Event Type <span>{{ sortIcon('eventType') }}</span></button></th>
+          <th><button class="sort-button" (click)="sortRequested.emit('eventStatus')" type="button">Event Status <span>{{ sortIcon('eventStatus') }}</span></button></th>
+          <th><button class="sort-button" (click)="sortRequested.emit('applicationName')" type="button">Application Name <span>{{ sortIcon('applicationName') }}</span></button></th>
+          <th><button class="sort-button" (click)="sortRequested.emit('businessFunction')" type="button">Business Function <span>{{ sortIcon('businessFunction') }}</span></button></th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let record of pagedRecords">
+          <td class="select-column"><input type="checkbox" [checked]="selectedIds.has(record.id)" (change)="recordToggled.emit(record.id)"></td>
+          <td class="date-cell">{{ formatDate(record.eventDate) }}</td>
+          <td>{{ record.eventTime }}</td>
+          <td><div class="user-cell"><span>{{ record.userName }}</span></div></td>
+          <td><span>{{ record.eventType }}</span></td>
+          <td><span class="status-pill">{{ record.eventStatus }}</span></td>
+          <td>{{ record.applicationName }}</td>
+          <td>{{ record.businessFunction }}</td>
+          <td><button type="button" class="view-button" (click)="recordViewed.emit(record)"><span aria-hidden="true"></span> View</button></td>
+        </tr>
+        <tr class="empty-row" *ngIf="!loading && pagedRecords.length === 0">
+          <td colspan="9">
+            <div class="empty-state">
+              <div class="empty-icon">⌕</div>
+              <strong>No audit records found</strong>
+              <span>Try adjusting the search criteria and search again.</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="results-footer" *ngIf="pageCount > 1">
+    <button type="button" class="btn btn-secondary" [disabled]="currentPage === 1" (click)="pageRequested.emit(currentPage - 1)">Previous</button>
+    <span>Page {{ currentPage }} of {{ pageCount }}</span>
+    <button type="button" class="btn btn-secondary" [disabled]="currentPage === pageCount" (click)="pageRequested.emit(currentPage + 1)">Next</button>
+  </div>
+</section>

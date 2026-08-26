@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuditApiService } from './services/audit-api.service';
+import { AuditSearchCriteriaComponent } from './app-audit-search-criteria/audit-search-criteria.component';
+import { AuditSearchResultsComponent } from './app-audit-search-results/audit-search-results.component';
 import {
   AuditRecord,
   AuditSearchCriteria,
@@ -15,9 +17,10 @@ type SortDirection = 'asc' | 'desc';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AuditSearchCriteriaComponent, AuditSearchResultsComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
