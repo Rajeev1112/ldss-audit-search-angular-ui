@@ -6,6 +6,13 @@ Angular 21 standalone application implementing the two supplied functional requi
 
 ## Implemented requirements
 
+### RBAC Login
+- Login is the first screen shown to the user.
+- The user selects `admin`, `normal`, or `other` and enters a required user ID.
+- All three configured roles are authorized for Audit Search in this local mock implementation.
+- The authenticated user ID and role are shown in the top-right navigation area.
+- Sign out returns the user to the login screen and clears the loaded audit results.
+
 ### Audit Search
 - Date range with default **current date - 1 day** through **current date**
 - Application Name, defaulted to **LDSS Unemployment Services Inquiry**

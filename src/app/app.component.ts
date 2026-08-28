@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewEncapsulation, computed, inject, signal } from '@angular/core';
+import { Component, ViewEncapsulation, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuditApiService } from './services/audit-api.service';
+import { LoggedInUser, LoginComponent } from './app-login/login.component';
 import { AuditSearchCriteriaComponent } from './app-audit-search-criteria/audit-search-criteria.component';
 import { AuditSearchResultsComponent } from './app-audit-search-results/audit-search-results.component';
 import {
@@ -17,12 +18,12 @@ type SortDirection = 'asc' | 'desc';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AuditSearchCriteriaComponent, AuditSearchResultsComponent],
+  imports: [CommonModule, ReactiveFormsModule, LoginComponent, AuditSearchCriteriaComponent, AuditSearchResultsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   private readonly fb = inject(FormBuilder);
   private readonly auditApi = inject(AuditApiService);
 
@@ -36,6 +37,7 @@ export class AppComponent implements OnInit {
   readonly expandedSections = signal(new Set<number>([1, 2]));
   readonly currentPage = signal(1);
   readonly pageSize = signal(5);
+  readonly loggedInUser = signal<LoggedInUser | null>(null);
 
   readonly eventTypes: EventType[] = ['Read', 'Create', 'Update', 'Delete'];
   readonly eventStatuses: EventStatus[] = ['Success', 'Failed'];
@@ -75,8 +77,16 @@ export class AppComponent implements OnInit {
     this.pagedRecords().every(record => this.selectedIds().has(record.id))
   );
 
-  ngOnInit(): void {
+  onLogin(user: LoggedInUser): void {
+    this.loggedInUser.set(user);
     this.search();
+  }
+
+  logout(): void {
+    this.loggedInUser.set(null);
+    this.searched.set(false);
+    this.records.set([]);
+    this.selectedRecord.set(null);
   }
 
   search(): void {

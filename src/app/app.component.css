@@ -3,6 +3,21 @@
   min-height: 100vh;
 }
 
+.header-logout {
+  border: 0;
+  border-left: 1px solid rgba(255,255,255,.3);
+  padding: 2px 0 2px 12px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.header-logout:hover {
+  text-decoration: underline;
+}
+
 .app-shell {
   min-height: 100vh;
   background: #f3f6f9;
