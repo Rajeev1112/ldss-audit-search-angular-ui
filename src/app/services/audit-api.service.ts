@@ -115,12 +115,23 @@ export class AuditApiService {
       const inRange = eventDate >= start && eventDate <= end;
       const appMatch = !criteria.applicationName ||
         record.applicationName.toLowerCase().includes(criteria.applicationName.toLowerCase());
-      const userMatch = !criteria.userName ||
-        record.userName.toLowerCase().includes(criteria.userName.toLowerCase());
-      const typeMatch = criteria.eventTypes.length === 0 || criteria.eventTypes.includes(record.eventType);
-      const statusMatch = criteria.eventStatuses.length === 0 || criteria.eventStatuses.includes(record.eventStatus);
+      
+      // Match first name or last name from userName (format: "First Last")
+      let nameMatch = true;
+      if (criteria.firstName || criteria.lastName) {
+        const nameParts = record.userName.split(' ');
+        const first = nameParts[0]?.toLowerCase() || '';
+        const last = nameParts[1]?.toLowerCase() || '';
+        
+        const firstMatch = !criteria.firstName || first.includes(criteria.firstName.toLowerCase());
+        const lastMatch = !criteria.lastName || last.includes(criteria.lastName.toLowerCase());
+        nameMatch = firstMatch && lastMatch;
+      }
+      
+      const typeMatch = !criteria.eventType || criteria.eventType === record.eventType;
+      const statusMatch = !criteria.eventStatus || criteria.eventStatus === record.eventStatus;
 
-      return inRange && appMatch && userMatch && typeMatch && statusMatch;
+      return inRange && appMatch && nameMatch && typeMatch && statusMatch;
     });
 
     return of(result).pipe(delay(350));

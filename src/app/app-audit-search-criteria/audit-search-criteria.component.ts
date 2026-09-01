@@ -17,16 +17,4 @@ export class AuditSearchCriteriaComponent {
 
   @Output() searchRequested = new EventEmitter<void>();
   @Output() resetRequested = new EventEmitter<void>();
-  @Output() multiValueToggled = new EventEmitter<{
-    controlName: 'eventTypes' | 'eventStatuses';
-    value: EventType | EventStatus;
-  }>();
-
-  toggleMultiValue(controlName: 'eventTypes' | 'eventStatuses', value: EventType | EventStatus): void {
-    this.multiValueToggled.emit({ controlName, value });
-  }
-
-  isMultiValueSelected(controlName: 'eventTypes' | 'eventStatuses', value: EventType | EventStatus): boolean {
-    return ((this.searchForm.controls[controlName].value ?? []) as string[]).includes(value);
-  }
 }

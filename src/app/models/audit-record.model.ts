@@ -26,7 +26,8 @@ export interface AuditSearchCriteria {
   startDate: string;
   endDate: string;
   applicationName: string;
-  userName: string;
-  eventTypes: EventType[];
-  eventStatuses: EventStatus[];
+  firstName: string;
+  lastName: string;
+  eventType: EventType | '';
+  eventStatus: EventStatus | '';
 }

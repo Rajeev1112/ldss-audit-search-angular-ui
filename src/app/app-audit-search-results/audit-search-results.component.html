@@ -4,6 +4,22 @@
       <h2>Audit Search Results</h2>
       <p *ngIf="searched">{{ records.length }} record{{ records.length === 1 ? '' : 's' }} found</p>
     </div>
+    <div class="export-controls" *ngIf="records.length > 0">
+      <div class="export-dropdown">
+        <button type="button" class="btn btn-export" (click)="toggleExportMenu('all')">⬇ Export All</button>
+        <div class="export-menu" *ngIf="showExportMenu === 'all'" (mouseleave)="showExportMenu = null">
+          <button type="button" class="export-option" (click)="exportToCSV(false); showExportMenu = null">CSV</button>
+          <button type="button" class="export-option" (click)="exportToExcel(false); showExportMenu = null">Excel</button>
+        </div>
+      </div>
+      <div class="export-dropdown" *ngIf="selectedIds.size > 0">
+        <button type="button" class="btn btn-export" (click)="toggleExportMenu('selected')">⬇ Export Selected ({{ selectedIds.size }})</button>
+        <div class="export-menu" *ngIf="showExportMenu === 'selected'" (mouseleave)="showExportMenu = null">
+          <button type="button" class="export-option" (click)="exportToCSV(true); showExportMenu = null">CSV</button>
+          <button type="button" class="export-option" (click)="exportToExcel(true); showExportMenu = null">Excel</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="loading-bar" *ngIf="loading"><span></span></div>
@@ -51,9 +67,15 @@
     </table>
   </div>
 
-  <div class="results-footer" *ngIf="pageCount > 1">
+  <div class="results-footer">
     <button type="button" class="btn btn-secondary" [disabled]="currentPage === 1" (click)="pageRequested.emit(currentPage - 1)">Previous</button>
     <span>Page {{ currentPage }} of {{ pageCount }}</span>
+    <div class="page-size-selector">
+      <label for="pageSize">Records per page:</label>
+      <select id="pageSize" [value]="pageSize" class="form-select-small" (change)="onPageSizeChange($event)">
+        <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+      </select>
+    </div>
     <button type="button" class="btn btn-secondary" [disabled]="currentPage === pageCount" (click)="pageRequested.emit(currentPage + 1)">Next</button>
   </div>
 </section>

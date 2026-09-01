@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewEncapsulation, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuditApiService } from './services/audit-api.service';
-import { LoggedInUser, LoginComponent } from './app-login/login.component';
 import { AuditSearchCriteriaComponent } from './app-audit-search-criteria/audit-search-criteria.component';
 import { AuditSearchResultsComponent } from './app-audit-search-results/audit-search-results.component';
 import {
@@ -18,12 +17,12 @@ type SortDirection = 'asc' | 'desc';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LoginComponent, AuditSearchCriteriaComponent, AuditSearchResultsComponent],
+  imports: [CommonModule, ReactiveFormsModule, AuditSearchCriteriaComponent, AuditSearchResultsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly auditApi = inject(AuditApiService);
 
@@ -37,7 +36,7 @@ export class AppComponent {
   readonly expandedSections = signal(new Set<number>([1, 2]));
   readonly currentPage = signal(1);
   readonly pageSize = signal(5);
-  readonly loggedInUser = signal<LoggedInUser | null>(null);
+  readonly pageSizeOptions = [5, 20, 50];
 
   readonly eventTypes: EventType[] = ['Read', 'Create', 'Update', 'Delete'];
   readonly eventStatuses: EventStatus[] = ['Success', 'Failed'];
@@ -47,9 +46,10 @@ export class AppComponent {
     startDate: [this.toInputDate(this.addDays(new Date(), -1)), Validators.required],
     endDate: [this.toInputDate(new Date()), Validators.required],
     applicationName: ['LDSS Unemployment Services Inquiry', Validators.required],
-    userName: [''],
-    eventTypes: this.fb.control<EventType[]>([]),
-    eventStatuses: this.fb.control<EventStatus[]>([])
+    firstName: [''],
+    lastName: [''],
+    eventType: this.fb.control<EventType | ''>('', { nonNullable: true }),
+    eventStatus: this.fb.control<EventStatus | ''>('', { nonNullable: true })
   });
 
   readonly sortedRecords = computed(() => {
@@ -77,16 +77,8 @@ export class AppComponent {
     this.pagedRecords().every(record => this.selectedIds().has(record.id))
   );
 
-  onLogin(user: LoggedInUser): void {
-    this.loggedInUser.set(user);
+  ngOnInit(): void {
     this.search();
-  }
-
-  logout(): void {
-    this.loggedInUser.set(null);
-    this.searched.set(false);
-    this.records.set([]);
-    this.selectedRecord.set(null);
   }
 
   search(): void {
@@ -105,9 +97,10 @@ export class AppComponent {
       startDate: value.startDate ?? '',
       endDate: value.endDate ?? '',
       applicationName: value.applicationName ?? '',
-      userName: value.userName ?? '',
-      eventTypes: value.eventTypes ?? [],
-      eventStatuses: value.eventStatuses ?? []
+      firstName: value.firstName ?? '',
+      lastName: value.lastName ?? '',
+      eventType: value.eventType ?? '',
+      eventStatus: value.eventStatus ?? ''
     };
 
     this.loading.set(true);
@@ -128,29 +121,19 @@ export class AppComponent {
       startDate: this.toInputDate(this.addDays(new Date(), -1)),
       endDate: this.toInputDate(new Date()),
       applicationName: 'LDSS Unemployment Services Inquiry',
-      userName: '',
-      eventTypes: [],
-      eventStatuses: []
+      firstName: '',
+      lastName: '',
+      eventType: '',
+      eventStatus: ''
     });
+    this.pageSize.set(5);
+    this.currentPage.set(1);
     this.search();
   }
 
-  toggleMultiValue(controlName: 'eventTypes' | 'eventStatuses', value: EventType | EventStatus): void {
-    const control = this.searchForm.controls[controlName];
-    const values = [...(control.value ?? [])] as Array<EventType | EventStatus>;
-    const index = values.indexOf(value);
-
-    if (index >= 0) {
-      values.splice(index, 1);
-    } else {
-      values.push(value);
-    }
-
-    control.setValue(values as never);
-  }
-
-  isMultiValueSelected(controlName: 'eventTypes' | 'eventStatuses', value: EventType | EventStatus): boolean {
-    return ((this.searchForm.controls[controlName].value ?? []) as string[]).includes(value);
+  onPageSizeChange(newSize: number): void {
+    this.pageSize.set(newSize);
+    this.currentPage.set(1);
   }
 
   sortBy(key: SortKey): void {
