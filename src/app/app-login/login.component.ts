@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-export type UserRole = 'admin' | 'normal' | 'other';
+export type UserRole = 'admin' | 'employee' | 'other';
 
 export interface LoggedInUser {
   id: string;
@@ -21,11 +21,11 @@ export class LoginComponent {
 
   @Output() readonly loginSucceeded = new EventEmitter<LoggedInUser>();
 
-  readonly roles: UserRole[] = ['admin', 'normal', 'other'];
+  readonly roles: UserRole[] = ['admin', 'employee', 'other'];
   readonly userIds = ['USR1042', 'USR1068', 'USR1017'];
 
   readonly loginForm = this.fb.group({
-    role: this.fb.control<UserRole>('normal', { nonNullable: true, validators: Validators.required }),
+    role: this.fb.control<UserRole>('employee', { nonNullable: true, validators: Validators.required }),
     userId: this.fb.control('', { nonNullable: true, validators: Validators.required })
   });
 
