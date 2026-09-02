@@ -6,18 +6,10 @@
     </div>
     <div class="export-controls" *ngIf="records.length > 0">
       <div class="export-dropdown">
-        <button type="button" class="btn btn-export" (click)="toggleExportMenu('all')">⬇ Export All</button>
-        <div class="export-menu" *ngIf="showExportMenu === 'all'" (mouseleave)="showExportMenu = null">
-          <button type="button" class="export-option" (click)="exportToCSV(false); showExportMenu = null">CSV</button>
-          <button type="button" class="export-option" (click)="exportToExcel(false); showExportMenu = null">Excel</button>
-        </div>
+        <button type="button" class="btn btn-export" (click)="exportToExcel(false)"><img src="/download.svg" alt="Download" class="icon"> Export All</button>
       </div>
       <div class="export-dropdown" *ngIf="selectedIds.size > 0">
-        <button type="button" class="btn btn-export" (click)="toggleExportMenu('selected')">⬇ Export Selected ({{ selectedIds.size }})</button>
-        <div class="export-menu" *ngIf="showExportMenu === 'selected'" (mouseleave)="showExportMenu = null">
-          <button type="button" class="export-option" (click)="exportToCSV(true); showExportMenu = null">CSV</button>
-          <button type="button" class="export-option" (click)="exportToExcel(true); showExportMenu = null">Excel</button>
-        </div>
+        <button type="button" class="btn btn-export" (click)="exportToExcel(true)"><img src="/download.svg" alt="Download" class="icon"> Export Selected ({{ selectedIds.size }})</button>
       </div>
     </div>
   </div>

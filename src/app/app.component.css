@@ -292,6 +292,14 @@ h1 {
   background: #f3f6f9;
 }
 
+.btn-export .icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
 .search-card form {
   padding: 21px 22px 18px;
 }
