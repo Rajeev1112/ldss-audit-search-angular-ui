@@ -15,14 +15,14 @@ type SortKey = 'eventDate' | 'eventTime' | 'userName' | 'eventType' | 'eventStat
 type SortDirection = 'asc' | 'desc';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-audit-search',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, AuditSearchCriteriaComponent, AuditSearchResultsComponent],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  templateUrl: './app-audit-search.component.html',
+  styleUrl: './app-audit-search.component.css',
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit {
+export class AppAuditSearchComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly auditApi = inject(AuditApiService);
 

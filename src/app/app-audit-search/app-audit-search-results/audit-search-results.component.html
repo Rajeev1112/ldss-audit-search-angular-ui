@@ -6,10 +6,10 @@
     </div>
     <div class="export-controls" >
       <div class="export-dropdown">
-        <button type="button" [disabled]="selectedIds.size || records.length==0" class="btn btn-export" (click)="exportToExcel(false)"><img src="/download.svg" alt="Download" class="icon"> Export All</button>
+        <button type="button" [disabled]="selectedIds.size || records.length==0" class="btn btn-export" (click)="exportToExcel(false)"><img src="app-audit-search/assets/download.svg" alt="Download" class="icon"> Export All</button>
       </div>
       <div class="export-dropdown">
-        <button type="button" [disabled]="!selectedIds.size" class="btn btn-export" (click)="exportToExcel(true)"><img src="/download.svg" alt="Download" class="icon"> Export Selected ({{ selectedIds.size }})</button>
+        <button type="button" [disabled]="!selectedIds.size" class="btn btn-export" (click)="exportToExcel(true)"><img src="app-audit-search/assets/download.svg" alt="Download" class="icon"> Export Selected ({{ selectedIds.size }})</button>
       </div>
     </div>
   </div>
