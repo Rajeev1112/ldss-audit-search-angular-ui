@@ -38,14 +38,17 @@ export class AppComponent implements OnInit {
   readonly pageSize = signal(5);
   readonly pageSizeOptions = [5, 20, 50];
 
-  readonly eventTypes: EventType[] = ['Read', 'Create', 'Update', 'Delete'];
+  readonly eventTypes: EventType[] = ['Read', 'Print', 'Retrieve'];
   readonly eventStatuses: EventStatus[] = ['Success', 'Failed'];
   readonly Math = Math;
 
   readonly searchForm = this.fb.group({
     startDate: [this.toInputDate(this.addDays(new Date(), -1)), Validators.required],
     endDate: [this.toInputDate(new Date()), Validators.required],
-    applicationName: ['LDSS Unemployment Services Inquiry', Validators.required],
+    applicationName: this.fb.control(
+      { value: 'LDSS Unemployment Services Inquiry', disabled: true },
+      Validators.required
+    ),
     firstName: [''],
     lastName: [''],
     eventType: this.fb.control<EventType | ''>('', { nonNullable: true }),

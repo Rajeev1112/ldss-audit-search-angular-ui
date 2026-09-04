@@ -1,4 +1,4 @@
-export type EventType = 'Read' | 'Create' | 'Update' | 'Delete';
+export type EventType = 'Read' | 'Print' | 'Retrieve';
 export type EventStatus = 'Success' | 'Failed';
 
 export interface AuditRecord {
