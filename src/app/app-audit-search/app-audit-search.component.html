@@ -105,14 +105,25 @@
           </div>
 
           <div class="sub-heading response-heading">Response Data</div>
-          <div >
-            <div class="detail-grid compact">
-              <div>
-                <span>Claimant Information</span>
-                <strong>{{ record.responseData.claimantInformation }}</strong>
-              </div>
+          <div class="detail-grid compact">
+            <div><span>Claimant Name</span><strong>{{ record.responseData.claimantInformation.claimantName }}</strong></div>
+            <div><span>Claimant Identifier</span><strong>{{ record.responseData.claimantInformation.claimantIdentifier }}</strong></div>
+            <div class="full-width"><span>Claimant Address</span><strong>{{ record.responseData.claimantInformation.claimantAddress }}</strong></div>
+            <div><span>State</span><strong>{{ record.responseData.claimantInformation.state }}</strong></div>
+            <div><span>Response Date</span><strong>{{ record.responseData.claimantInformation.todaysDate }}</strong></div>
+            <div><span>Return Code</span><strong>{{ record.responseData.claimantInformation.returnCode }}</strong></div>
+            <div><span>Return Description</span><strong>{{ record.responseData.claimantInformation.returnCodeDescription }}</strong></div>
           </div>
+
+          <div class="sub-heading response-heading">Claims</div>
+          <div class="detail-grid compact" *ngFor="let claim of record.responseData.claimantInformation.claims; let index = index">
+            <div class="full-width"><span>Claim {{ index + 1 }}</span><strong>{{ claim | json }}</strong></div>
           </div>
+
+          <!-- <div class="sub-heading response-heading">Employer Charges</div>
+          <div class="detail-grid compact" *ngFor="let charge of record.responseData.claimantInformation.employerChargeDetails; let index = index">
+            <div class="full-width"><span>Charge {{ index + 1 }}</span><strong>{{ charge | json }}</strong></div>
+          </div> -->
         </div>
       </section>
     </div>

@@ -1,6 +1,19 @@
 export type EventType = 'Read' | 'Print' | 'Retrieve';
 export type EventStatus = 'Success' | 'Failed';
 
+export interface ClaimInformation {
+  ssn: string;
+  claimantName: string;
+  claimantAddress: string;
+  claimantIdentifier: string;
+  state: string;
+  todaysDate: string;
+  returnCode: string;
+  returnCodeDescription: string;
+  claims: Array<Record<string, unknown>>;
+  employerChargeDetails: Array<Record<string, unknown>>;
+}
+
 export interface AuditRecord {
   id: string;
   eventDate: string;
@@ -18,7 +31,7 @@ export interface AuditRecord {
     endDate: string;
   };
   responseData: {
-    claimantInformation: string;
+    claimantInformation: ClaimInformation;
   };
 }
 
