@@ -31,11 +31,12 @@ interface RawAuditResponse {
 @Injectable({ providedIn: 'root' })
 export class AuditApiService {
   search(criteria: AuditSearchCriteria): Observable<AuditRecord[]> {
-    const record = this.mapResponse(apiResponse as RawAuditResponse, criteria);
+    const records = (apiResponse as RawAuditResponse[])
+      .map(response => this.mapResponse(response, criteria));
     const start = new Date(`${criteria.startDate}T00:00:00`);
     const end = new Date(`${criteria.endDate}T23:59:59`);
 
-    const result = [record].filter(record => {
+    const result = records.filter(record => {
       const eventDate = new Date(`${record.eventDate}T${record.eventTime}`);
       const inRange = eventDate >= start && eventDate <= end;
       const appMatch = !criteria.applicationName ||
