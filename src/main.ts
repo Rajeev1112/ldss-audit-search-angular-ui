@@ -1,6 +1,8 @@
-import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { AppAuditSearchComponent } from './app/app-audit-search/app-audit-search.component';
+import 'zone.js';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AppModule } from './app/app.module';
+import { AppAuditSearchComponent } from './app/audit-search/audit-search.component';
 
-bootstrapApplication(AppAuditSearchComponent, appConfig)
+platformBrowserDynamic()
+  .bootstrapModule(AppModule)
   .catch((error: unknown) => console.error(error));

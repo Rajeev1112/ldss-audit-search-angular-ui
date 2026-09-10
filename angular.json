@@ -8,7 +8,7 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "css",
-          "standalone": true
+          "standalone": false
         }
       },
       "root": "",
@@ -16,15 +16,18 @@
       "prefix": "ldss",
       "architect": {
         "build": {
-          "builder": "@angular/build:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "browser": "src/main.ts",
+            "outputPath": "dist/ldss-audit-search-ui",
+            "index": "src/index.html",
+            "main": "src/main.ts",
             "polyfills": [],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "output": "."
               },
               {
                 "glob": "**/*",
@@ -56,19 +59,19 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular/build:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "ldss-audit-search-ui:build:production"
+              "browserTarget": "ldss-audit-search-ui:build:production"
             },
             "development": {
-              "buildTarget": "ldss-audit-search-ui:build:development"
+              "browserTarget": "ldss-audit-search-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:unit-test"
+          "builder": "@angular-devkit/build-angular:karma"
         }
       }
     }

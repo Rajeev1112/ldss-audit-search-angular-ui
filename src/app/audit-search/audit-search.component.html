@@ -20,27 +20,27 @@
       </div>
     </section>
 
-    <app-audit-search-criteria
+    <audit-search-criteria
       [searchForm]="searchForm"
       [eventTypes]="eventTypes"
       [eventStatuses]="eventStatuses"
-      [loading]="loading()"
+      [loading]="loading"
       (searchRequested)="search()"
       (resetRequested)="reset()">
-    </app-audit-search-criteria>
+    </audit-search-criteria>
 
-    <app-audit-search-results
-      [loading]="loading()"
-      [searched]="searched()"
-      [records]="sortedRecords()"
-      [pagedRecords]="pagedRecords()"
-      [selectedIds]="selectedIds()"
-      [allVisibleSelected]="allVisibleSelected()"
-      [pageCount]="pageCount()"
-      [currentPage]="currentPage()"
-      [sortKey]="sortKey()"
-      [sortDirection]="sortDirection()"
-      [pageSize]="pageSize()"
+    <audit-search-results
+      [loading]="loading"
+      [searched]="searched"
+      [records]="sortedRecords"
+      [pagedRecords]="pagedRecords"
+      [selectedIds]="selectedIds"
+      [allVisibleSelected]="allVisibleSelected"
+      [pageCount]="pageCount"
+      [currentPage]="currentPage"
+      [sortKey]="sortKey"
+      [sortDirection]="sortDirection"
+      [pageSize]="pageSize"
       [pageSizeOptions]="pageSizeOptions"
       (sortRequested)="sortBy($event)"
       (visibleRecordsToggled)="toggleVisibleRecords()"
@@ -48,12 +48,12 @@
       (recordViewed)="viewRecord($event)"
       (pageRequested)="goToPage($event)"
       (pageSizeChanged)="onPageSizeChange($event)">
-    </app-audit-search-results>
+    </audit-search-results>
   </main>
 
 </div>
 
-<div class="modal-backdrop" *ngIf="selectedRecord() as record" (click)="closeDetails()">
+<div class="modal-backdrop" *ngIf="selectedRecord as record" (click)="closeDetails()">
   <aside class="details-panel" role="dialog" aria-modal="true" aria-labelledby="details-title" (click)="$event.stopPropagation()">
     <div class="details-header">
       <div>

@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AuditRecord, EventStatus } from '../models/audit-record.model';
 import * as XLSX from 'xlsx';
@@ -7,9 +6,7 @@ type SortKey = 'eventDate' | 'eventTime' | 'userName' | 'eventType' | 'eventStat
 type SortDirection = 'asc' | 'desc';
 
 @Component({
-  selector: 'app-audit-search-results',
-  standalone: true,
-  imports: [CommonModule],
+  selector: 'audit-search-results',
   templateUrl: './audit-search-results.component.html'
 })
 export class AuditSearchResultsComponent {
@@ -18,18 +15,18 @@ export class AuditSearchResultsComponent {
   toggleExportMenu(type: 'all' | 'selected'): void {
     this.showExportMenu = this.showExportMenu === type ? null : type;
   }
-  @Input({ required: true }) loading = false;
-  @Input({ required: true }) searched = false;
-  @Input({ required: true }) records!: AuditRecord[];
-  @Input({ required: true }) pagedRecords!: AuditRecord[];
-  @Input({ required: true }) selectedIds!: Set<string>;
-  @Input({ required: true }) allVisibleSelected = false;
-  @Input({ required: true }) pageCount = 1;
-  @Input({ required: true }) currentPage = 1;
-  @Input({ required: true }) sortKey!: SortKey;
-  @Input({ required: true }) sortDirection!: SortDirection;
-  @Input({ required: true }) pageSize = 5;
-  @Input({ required: true }) pageSizeOptions!: number[];
+  @Input() loading = false;
+  @Input() searched = false;
+  @Input() records!: AuditRecord[];
+  @Input() pagedRecords!: AuditRecord[];
+  @Input() selectedIds!: Set<string>;
+  @Input() allVisibleSelected = false;
+  @Input() pageCount = 1;
+  @Input() currentPage = 1;
+  @Input() sortKey!: SortKey;
+  @Input() sortDirection!: SortDirection;
+  @Input() pageSize = 5;
+  @Input() pageSizeOptions!: number[];
 
   @Output() sortRequested = new EventEmitter<SortKey>();
   @Output() visibleRecordsToggled = new EventEmitter<void>();
