@@ -3,8 +3,11 @@ export type EventStatus = 'Success' | 'Failed';
 
 export interface ClaimInformation {
   ssn: string;
+  firstName: string;
+  lastName: string;
   claimantName: string;
   claimantAddress: string;
+  claimantNameAndAddress: string;
   claimantIdentifier: string;
   state: string;
   todaysDate: string;
